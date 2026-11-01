@@ -1,0 +1,42 @@
+{
+  "name": "sable-lang",
+  "version": "0.1.0",
+  "description": "A small expression-oriented scripting language with a bytecode VM, closures, pattern matching and a browser playground.",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "sable": "bin/sable.js"
+  },
+  "files": [
+    "src",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/run.js",
+    "playground": "node scripts/serve.js",
+    "repl": "node bin/sable.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "programming-language",
+    "interpreter",
+    "compiler",
+    "bytecode",
+    "virtual-machine",
+    "scripting"
+  ],
+  "author": "Agneya Kolhatkar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgneyaK/sable.git"
+  },
+  "homepage": "https://agneyak.github.io/sable/playground/"
+}
