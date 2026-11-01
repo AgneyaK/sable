@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sable Playground</title>
+  <meta name="description" content="Write and run Sable, a small expression-oriented scripting language, right in your browser.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f2b45a'/%3E%3Cpath d='M21 10.5c-1.2-1.3-3-2-5-2-3 0-5 1.6-5 3.9 0 5 10 2.9 10 7.6 0 2.2-2.1 3.8-5 3.8-2.2 0-4.1-.8-5.4-2.3' fill='none' stroke='%23181a20' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Sable playground home">
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="var(--accent)"/>
+        <path d="M21 10.5c-1.2-1.3-3-2-5-2-3 0-5 1.6-5 3.9 0 5 10 2.9 10 7.6 0 2.2-2.1 3.8-5 3.8-2.2 0-4.1-.8-5.4-2.3" fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">Sable</span>
+      <span class="brand-tag">playground</span>
+    </a>
+    <div class="actions">
+      <label class="visually-hidden" for="examples">Example program</label>
+      <select id="examples"></select>
+      <button id="share" type="button" class="ghost" title="Copy a link to this program">Share</button>
+      <button id="run" type="button" class="primary" title="Run (Ctrl+Enter)">
+        <span class="run-label">Run</span><kbd>Ctrl ⏎</kbd>
+      </button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="pane editor-pane" aria-label="Editor">
+      <div class="pane-head">
+        <span class="file">main.sb</span>
+        <span id="cursor" class="muted">Ln 1, Col 1</span>
+      </div>
+      <div class="editor">
+        <div id="gutter" class="gutter" aria-hidden="true"></div>
+        <div class="code">
+          <pre class="highlight" aria-hidden="true"><code id="highlight"></code></pre>
+          <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Sable source code"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="pane output-pane" aria-label="Output">
+      <div class="pane-head tabs" role="tablist">
+        <button role="tab" class="tab active" data-panel="output" aria-selected="true">Output</button>
+        <button role="tab" class="tab" data-panel="bytecode" aria-selected="false">Bytecode</button>
+        <button role="tab" class="tab" data-panel="ast" aria-selected="false">AST</button>
+        <button role="tab" class="tab" data-panel="tokens" aria-selected="false">Tokens</button>
+        <span id="status" class="status muted"></span>
+      </div>
+      <pre id="panel-output" class="panel active" role="tabpanel"><span class="muted">Press Run or Ctrl+Enter to run your program.</span></pre>
+      <pre id="panel-bytecode" class="panel" role="tabpanel"></pre>
+      <pre id="panel-ast" class="panel" role="tabpanel"></pre>
+      <pre id="panel-tokens" class="panel" role="tabpanel"></pre>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
