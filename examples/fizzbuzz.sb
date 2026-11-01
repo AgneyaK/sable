@@ -1,0 +1,14 @@
+// FizzBuzz, by matching on the remainder mod 15.
+
+fn fizzbuzz(n) {
+  match n % 15 {
+    0 => "FizzBuzz",
+    3 | 6 | 9 | 12 => "Fizz",
+    5 | 10 => "Buzz",
+    _ => str(n),
+  }
+}
+
+for row in (1..=30).chunk(10) {
+  print(row.map(fizzbuzz).map(|s| s.pad_end(9)).join("").trim_end());
+}

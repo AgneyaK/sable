@@ -1,0 +1,22 @@
+// The sieve of Eratosthenes.
+
+fn sieve(limit) {
+  let is_prime = (0..=limit).map(|_| true);
+  is_prime[0] = false;
+  is_prime[1] = false;
+  for i in 2..=limit {
+    if i * i > limit { break; }
+    if is_prime[i] {
+      for j in range(i * i, limit + 1, i) {
+        is_prime[j] = false;
+      }
+    }
+  }
+  (0..=limit).filter(|n| is_prime[n])
+}
+
+let primes = sieve(200);
+print("{primes.len()} primes up to 200:");
+for row in primes.chunk(10) {
+  print(row.map(|p| str(p).pad_start(4)).join(""));
+}

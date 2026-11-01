@@ -1,0 +1,43 @@
+// A complete Brainfuck interpreter, written in Sable.
+
+fn run_bf(source) {
+  let code = source.chars().filter(|c| "+-<>[].,".contains(c));
+
+  // Pre-compute matching brackets so loops jump in O(1).
+  let jumps = {};
+  let open = [];
+  for i, c in code {
+    if c == "[" {
+      open.push(i);
+    } else if c == "]" {
+      let j = open.pop();
+      jumps[i] = j;
+      jumps[j] = i;
+    }
+  }
+
+  let tape = [0];
+  let ptr = 0;
+  let pc = 0;
+  let out = "";
+  while pc < code.len() {
+    match code[pc] {
+      "+" => { tape[ptr] = (tape[ptr] + 1) % 256; },
+      "-" => { tape[ptr] = (tape[ptr] - 1) % 256; },
+      ">" => {
+        ptr += 1;
+        if ptr == tape.len() { tape.push(0); }
+      },
+      "<" => { ptr -= 1; },
+      "." => { out += chr(tape[ptr]); },
+      "[" => { if tape[ptr] == 0 { pc = jumps[pc]; } },
+      "]" => { if tape[ptr] != 0 { pc = jumps[pc]; } },
+      _ => nil,
+    }
+    pc += 1;
+  }
+  out
+}
+
+let hello = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.";
+print(run_bf(hello).trim());

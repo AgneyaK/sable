@@ -1,0 +1,43 @@
+// Welcome to Sable! Run this with `sable examples/hello.sb`,
+// or press Ctrl+Enter in the playground.
+
+let name = "world";
+print("Hello, {name}!");
+
+// Everything is an expression: blocks, `if` and `match` all produce values.
+let mood = if name.len() > 3 { "chatty" } else { "terse" };
+print("Feeling {mood} today.");
+
+// The last expression in a block is its value, so `return` is optional.
+fn square(x) { x * x }
+let cube = |x| x * square(x);
+
+print("squares:", [1, 2, 3, 4, 5].map(square));
+print("cubes:  ", (1..=5).map(cube));
+
+// `x |> f(a)` is `f(x, a)`: read data pipelines left to right.
+fn evens(xs) { xs.filter(|x| x % 2 == 0) }
+fn total(xs) { xs.reduce(|a, b| a + b, 0) }
+let sum = 1..=100 |> list() |> evens() |> total();
+print("sum of even numbers up to 100: {sum}");
+
+// Maps hold key/value pairs; fields are just string keys.
+let lang = { name: "Sable", born: 2026, tags: ["small", "fast", "friendly"] };
+print("{lang.name} was born in {lang.born} and is {lang.tags.join(", ")}.");
+for key, value in lang {
+  print("  {key} = {value}");
+}
+
+// Pattern matching with literals, alternatives, ranges and guards.
+fn describe(n) {
+  match n {
+    0 => "zero",
+    1 | 2 | 3 => "a few",
+    4..10 => "several",
+    x if x < 0 => "negative",
+    _ => "lots",
+  }
+}
+for n in [0, 2, 7, -4, 99] {
+  print("{n} is {describe(n)}");
+}

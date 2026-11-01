@@ -1,0 +1,23 @@
+// The Mandelbrot set, rendered in ASCII.
+
+let shades = " .:-=+*#%@";
+let max_iter = 50;
+
+for row in 0..22 {
+  let line = "";
+  for col in 0..70 {
+    let cr = col / 70 * 3.5 - 2.5;
+    let ci = row / 22 * 2.4 - 1.2;
+    let zr = 0;
+    let zi = 0;
+    let i = 0;
+    while i < max_iter and zr * zr + zi * zi < 4 {
+      let t = zr * zr - zi * zi + cr;
+      zi = 2 * zr * zi + ci;
+      zr = t;
+      i += 1;
+    }
+    line += shades[math.floor(i * (shades.len() - 1) / max_iter)];
+  }
+  print(line.trim_end());
+}

@@ -1,0 +1,29 @@
+// Word statistics with pipes, maps and higher-order functions.
+
+let text = "the quick brown fox jumps over the lazy dog while the other fox naps";
+
+fn count_words(words) {
+  let counts = {};
+  for w in words {
+    counts[w] = counts.get(w, 0) + 1;
+  }
+  counts
+}
+
+fn top(counts, n) {
+  counts.entries().sort_by(|entry| -entry[1]).take(n)
+}
+
+print("most common words:");
+for entry in text.split() |> count_words() |> top(3) {
+  print("  {entry[0].pad_end(6)} {"*".repeat(entry[1])}");
+}
+
+print("words grouped by length:");
+let by_length = text.split().unique().group_by(|w| w.len());
+for length in by_length.keys().sort() {
+  print("  {length}: {by_length[length].join(", ")}");
+}
+
+let longest = text.split().reduce(|a, b| if b.len() > a.len() { b } else { a });
+print("longest word: {longest}");

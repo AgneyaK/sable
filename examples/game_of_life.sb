@@ -1,0 +1,46 @@
+// Conway's Game of Life on a small wrapping grid, starting with a glider.
+
+let W = 16;
+let H = 8;
+
+fn blank() {
+  (0..H).map(|_| (0..W).map(|_| false))
+}
+
+fn neighbours(grid, x, y) {
+  let n = 0;
+  for dy in -1..=1 {
+    for dx in -1..=1 {
+      if dx == 0 and dy == 0 { continue; }
+      // `%` takes the sign of the divisor, so -1 % W wraps to W - 1.
+      if grid[(y + dy) % H][(x + dx) % W] { n += 1; }
+    }
+  }
+  n
+}
+
+fn step(grid) {
+  (0..H).map(|y| (0..W).map(|x| {
+    match neighbours(grid, x, y) {
+      3 => true,
+      2 => grid[y][x],
+      _ => false,
+    }
+  }))
+}
+
+fn render(grid) {
+  grid.map(|row| row.map(|alive| if alive { "#" } else { "." }).join("")).join("\n")
+}
+
+let grid = blank();
+for cell in [[1, 0], [2, 1], [0, 2], [1, 2], [2, 2]] {
+  grid[cell[1]][cell[0]] = true;
+}
+
+for generation in 0..4 {
+  print("generation {generation}:");
+  print(render(grid));
+  print("");
+  grid = step(grid);
+}

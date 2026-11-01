@@ -1,0 +1,106 @@
+// An arithmetic evaluator: a tokenizer and a recursive-descent parser.
+
+fn tokenize(src) {
+  let tokens = [];
+  let i = 0;
+  while i < src.len() {
+    let c = src[i];
+    if c.is_space() {
+      i += 1;
+    } else if c.is_digit() {
+      let start = i;
+      while i < src.len() and (src[i].is_digit() or src[i] == ".") { i += 1; }
+      tokens.push({ kind: "num", value: num(src.slice(start, i)) });
+    } else if "+-*/^()".contains(c) {
+      tokens.push({ kind: c });
+      i += 1;
+    } else {
+      error("unexpected character '{c}'");
+    }
+  }
+  tokens.push({ kind: "end" });
+  tokens
+}
+
+// The parser state is a map of closures sharing one `pos` variable.
+fn parser(tokens) {
+  let pos = 0;
+  {
+    peek: || tokens[pos].kind,
+    next: || {
+      pos += 1;
+      tokens[pos - 1]
+    },
+    expect: |kind| {
+      if tokens[pos].kind != kind { error("expected '{kind}' but found '{tokens[pos].kind}'"); }
+      pos += 1;
+    },
+  }
+}
+
+fn expr(p) {
+  let value = term(p);
+  while p.peek() == "+" or p.peek() == "-" {
+    let op = p.next().kind;
+    let rhs = term(p);
+    value = if op == "+" { value + rhs } else { value - rhs };
+  }
+  value
+}
+
+fn term(p) {
+  let value = power(p);
+  while p.peek() == "*" or p.peek() == "/" {
+    let op = p.next().kind;
+    let rhs = power(p);
+    value = if op == "*" { value * rhs } else { value / rhs };
+  }
+  value
+}
+
+// `^` is right associative: 2 ^ 3 ^ 2 is 2 ^ 9.
+fn power(p) {
+  let base = unary(p);
+  if p.peek() == "^" {
+    p.next();
+    base ** power(p)
+  } else {
+    base
+  }
+}
+
+fn unary(p) {
+  if p.peek() == "-" {
+    p.next();
+    -unary(p)
+  } else {
+    primary(p)
+  }
+}
+
+fn primary(p) {
+  let tok = p.next();
+  match tok.kind {
+    "num" => tok.value,
+    "(" => {
+      let v = expr(p);
+      p.expect(")");
+      v
+    },
+    k => error("unexpected '{k}'"),
+  }
+}
+
+fn calc(src) {
+  let p = parser(tokenize(src));
+  let value = expr(p);
+  p.expect("end");
+  value
+}
+
+for src in ["1 + 2 * 3", "(1 + 2) * 3", "2 ^ 3 ^ 2", "-(4 - 6) * 2.5", "10 / 4"] {
+  print("{src} = {calc(src)}");
+}
+
+let result = try(|| calc("2 * (3 + )"));
+print("2 * (3 + ) -> error: {result.error}");

@@ -1,0 +1,19 @@
+// A functional quicksort, checked against the built-in sort.
+
+fn quicksort(xs) {
+  if xs.len() <= 1 {
+    return xs;
+  }
+  let pivot = xs[0];
+  let rest = xs.skip(1);
+  quicksort(rest.filter(|x| x < pivot)) + [pivot] + quicksort(rest.filter(|x| x >= pivot))
+}
+
+math.seed(42);
+let data = (0..20).map(|_| math.random_int(0, 99));
+let sorted = quicksort(data);
+
+print("input: ", data);
+print("sorted:", sorted);
+assert_eq(sorted, data.sort());
+print("matches the built-in sort.");

@@ -1,0 +1,47 @@
+// Closures capture variables, not values.
+
+fn make_counter() {
+  let count = 0;
+  || {
+    count += 1;
+    count
+  }
+}
+
+let a = make_counter();
+let b = make_counter();
+a();
+a();
+print("a = {a()}, b = {b()}");  // a = 3, b = 1
+
+// Each loop iteration gets a fresh variable, so every closure sees its own `i`.
+let fns = [];
+for i in 0..3 {
+  fns.push(|| i * 10);
+}
+print(fns.map(|f| f()));  // [0, 10, 20]
+
+// A higher-order function that caches results in a private map.
+fn memoize(f) {
+  let cache = {};
+  |n| {
+    if not cache.has(n) {
+      cache[n] = f(n);
+    }
+    cache[n]
+  }
+}
+
+let calls = 0;
+let fib = memoize(|n| {
+  calls += 1;
+  if n < 2 { n } else { fib(n - 1) + fib(n - 2) }
+});
+print("fib(70) = {fib(70)}, computed with only {calls} calls");
+
+// Functions that build functions.
+fn compose(f, g) { |x| g(f(x)) }
+let inc = |x| x + 1;
+let double = |x| x * 2;
+let inc_then_double = compose(inc, double);
+print("compose(inc, double)(5) = {inc_then_double(5)}");
